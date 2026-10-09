@@ -1,80 +1,124 @@
-import React from "react";
-import Card from "./components/card";
-import Button from "./components/Button";
+
+import React, { useState } from 'react';
+
 const App = () => {
-  const data = [
+  const [data, setData] = useState([
     {
-      name: ".Net August 2026",
-      nachalo: "Aug 5,2026",
-      kones: "Dec 5,2026",
-      days: "Mn,Tu,Wd,Th,Fr,Sa",
-      length:"4month",
-      vakt:"16.00-18.00",
-      students:"7",
-      branch: "Profsoyuz",
-    }, {
-      name: "JS1",
-      nachalo: "Aug 5,2026",
-      kones: "Dec 5,2026",
-      days: "Mn,Tu,Wd,Th,Fr,Sa",
-      length:"4month",
-      vakt:"16.00-18.00",
-      students:"7",
-      branch: "Profsoyuz",
-    }, {
-      name: "Html and Css",
-      nachalo: "Aug 5,2026",
-      kones: "Dec 5,2026",
-      days: "Mn,Tu,Wd,Th,Fr,Sa",
-      length:"4month",
-      vakt:"16.00-18.00",
-      students:"7",
-      branch: "Profsoyuz",
-    }, {
-      name: "JS 2month",
-      nachalo: "Aug 5,2026",
-      kones: "Dec 5,2026",
-      days: "Mn,Tu,Wd,Th,Fr,Sa",
-      length:"4month",
-      vakt:"16.00-18.00",
-      students:"7",
-      branch: "Profsoyuz",
-    }, {
-      name: "C++",
-      nachalo: "Aug 5,2026",
-      kones: "Dec 5,2026",
-      days: "Mn,Tu,Wd,Th,Fr,Sa",
-      length:"4month",
-      vakt:"16.00-18.00",
-      students:"7",
-      branch: "Profsoyuz",
-    }, {
-      name: "Python",
-      nachalo: "Aug 5,2026",
-      kones: "Dec 5,2026",
-      days: "Mn,Tu,Wd,Th,Fr,Sa",
-      length:"4month",
-      vakt:"16.00-18.00",
-      students:"7",
-      branch: "Profsoyuz",
-    }, {
-      name: "Fluter",
-      nachalo: "Aug 5,2026",
-      kones: "Dec 5,2026",
-      days: "Mn,Tu,Wd,Th,Fr,Sa",
-      length:"4month",
-      vakt:"16.00-18.00",
-      students:"7",
-      branch: "Profsoyuz",
+      id: 1,
+      name: "Ahmad",
+      age: 20
     },
-  ];
+    {
+      id: 2,
+      name: "Ali",
+      age: 25
+    }
+  ]);
+
+  const [idx, setId] = useState(null);
+  const [search, setSearch] = useState("");
+
+  const handleEdit = (user) => {
+    setId(user.id);
+  };
+
+  const handleSave = (e) => {
+    e.preventDefault();
+
+    const newUser = {
+      id: idx,
+      name: e.target.name.value,
+      age: e.target.age.value,
+    };
+
+    setData(data.map((el) => el.id === idx ? newUser : el));
+    setId(null);
+  };
+
+  const handleDelete = (id) => {
+    setData(data.filter((e) => e.id !== id));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const newUser = {
+      id: Date.now(),
+      name: e.target.name.value,
+      age: e.target.age.value,
+    };
+
+    setData([...data, newUser]);
+    e.target.reset();
+  };
+
+  const filteredData = data.filter((e) =>
+    e.name.toLowerCase().includes(search.toLowerCase().trim())
+  );
 
   return (
-    <>
-      {data.map((e) => {
-        return <Card {...e} />;
-      })}
-    </>
+    <div>
+      <h2>Add User</h2>
+
+      <form onSubmit={handleSubmit}>
+        <input type="text" name="name" placeholder="Name" required />
+        <input type="number" name="age" placeholder="Age" required />
+        <button type="submit">Add</button>
+      </form>
+
+      <hr />
+
+      <h2>Search User</h2>
+
+      <input
+        type="text"
+        placeholder="Search by name..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      <hr />
+
+      {filteredData.map((e) => (
+        <div key={e.id}>
+          <h3>Name: {e.name}</h3>
+          <p>Age: {e.age}</p>
+
+          {idx === e.id && (
+            <form onSubmit={handleSave}>
+              <input
+                type="text"
+                name="name"
+                defaultValue={e.name}
+                required
+              />
+
+              <input
+                type="number"
+                name="age"
+                defaultValue={e.age}
+                required
+              />
+
+              <button type="submit">Save</button>
+
+              <button type="button" onClick={() => setId(null)}>
+                Cancel
+              </button>
+            </form>
+          )}
+
+          <button onClick={() => handleDelete(e.id)}>
+            Delete
+          </button>
+
+          <button onClick={() => handleEdit(e)}>
+            Edit
+          </button>
+        </div>
+      ))}
+
+    </div>
   );
 };
 
